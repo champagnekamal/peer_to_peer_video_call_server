@@ -6,15 +6,36 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const allowedOrigins = [
   "http://localhost:5173", // Local development
-  "https://peer-to-peer-pern.netlify.app/", // Production frontend
+  "https://peer-to-peer-pern.netlify.app", // Production frontend
 ];
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST"], // Allowed methods for WebSocket requests
+    allowedHeaders: ["Content-Type"], // Allowed headers
   },
 });
+
+// Express CORS options
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST"], // Allowed HTTP methods
+  allowedHeaders: ["Content-Type"], // Allowed headers for REST API
+  credentials: true, // Include cookies/authorization headers if needed
+};
+app.use(cors(corsOptions));
 const dotenv = require("dotenv").config();
 const { createuser } = require("./Controller/User");
 const { check, validationResult } = require("express-validator");
@@ -24,12 +45,7 @@ const { CreatePages } = require("./Controller/Pages");
 const { Allusers } = require("./Controller/Allusers");
 const { getTrendingSearches } = require("./Controller/Googletrends");
 
-const corsOptions = {
-  origin: allowedOrigins, // Replace with your frontend's URL (e.g., React app running on localhost:3000)
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"],
-};
-app.use(cors(corsOptions));
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
