@@ -3,9 +3,13 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const allowedOrigins = [
+  "http://localhost:5173", // Local development
+  "https://peer-to-peer-pern.netlify.app", // Production frontend
+];
 const io = new Server(server, {
   cors: {
-    origin: "https://peer-to-peer-pern.netlify.app", // Replace with your frontend's URL
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   },
