@@ -3,6 +3,7 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const cors = require("cors");
 const allowedOrigins = [
   "http://localhost:5173", // Local development
   "https://peer-to-peer-pern.netlify.app/", // Production frontend
@@ -14,7 +15,6 @@ const io = new Server(server, {
     allowedHeaders: ["Content-Type"],
   },
 });
-const cors = require("cors");
 const dotenv = require("dotenv").config();
 const { createuser } = require("./Controller/User");
 const { check, validationResult } = require("express-validator");
@@ -25,7 +25,7 @@ const { Allusers } = require("./Controller/Allusers");
 const { getTrendingSearches } = require("./Controller/Googletrends");
 
 const corsOptions = {
-  origin: "http://localhost:5173", // Replace with your frontend's URL (e.g., React app running on localhost:3000)
+  origin: allowedOrigins, // Replace with your frontend's URL (e.g., React app running on localhost:3000)
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 };
