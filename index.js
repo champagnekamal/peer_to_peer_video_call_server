@@ -5,7 +5,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const allowedOrigins = [
   "http://localhost:5173", // Local development
-  "https://peer-to-peer-pern.netlify.app", // Production frontend
+  "https://peer-to-peer-pern.netlify.app/", // Production frontend
 ];
 const io = new Server(server, {
   cors: {
